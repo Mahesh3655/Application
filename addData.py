@@ -5,5 +5,5 @@ client = MongoClient()
 db=client.company
 emp=db.Employees
 for k in emp.find():
-    print(type(k))
+    print(k)
 
