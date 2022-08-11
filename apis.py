@@ -49,6 +49,36 @@ def update_employee(id):
 
 @app.route("/insert",methods=["POST"])
 def insert_Employee():
+    lst = database()
+    data = json.loads(request.get_data())
+    employee = {}
+    employee["_id"] = lst[-1]["_id"] +1
+    employee["name"] = data["name"]
+    employee["role"] = data["role"]
+    employee["age"] = data["age"]
+    employee["salary"] = data["salary"]
     client = MongoClient()
+    db = client.company
+    e = db.Employees
+    e.insert_one(employee)
+    return "done"
+
+@app.route("/delete/<int:id>",methods=['DELETE'])
+def delete_Employee(id):
+    lst = database()
+    employee = []
+    for emp in lst:
+        if emp["_id"] == id:
+            employee.append(emp)
+    if len(employee) == 0:
+        abort(404)
+
+    client = MongoClient()
+    db = client.company
+    e = db.Employees
+    e.delete_one({"_id" : id})
+    return "done"
+
+
 
 app.run()
