@@ -6,7 +6,7 @@ from pymongo import MongoClient
 app = Flask(__name__)
 
 def database():
-    client = MongoClient()
+    client = MongoClient('mongodb://3.86.159.183:27017/company')
     db = client.company
     e = db.Employees
     lst =[]
@@ -14,9 +14,9 @@ def database():
         lst.append(i)
     return lst
 @app.route("/",methods=['GET'])
-def gcff():
+def all_Employees():
     lst = database()
-    return json.dumps(lst)
+    return jsonify(lst)
 
 @app.route("/getid/<int:id>",methods=['GET'])
 def get_emp_id(id):
@@ -35,11 +35,11 @@ def notfound(error):
     return make_response("Not Found",404)
 @app.errorhandler(400)
 def badrequest(error):
-    return make_response("bad Request",400)
+    return make_response("Bad Request",400)
 
 @app.route("/update/<int:id>",methods=['PUT'])
 def update_employee(id):
-    client = MongoClient()
+    client = MongoClient('mongodb://3.86.159.183:27017/company')
     db = client.company
     e = db.Employees
     data = json.loads(request.get_data())
@@ -57,7 +57,7 @@ def insert_Employee():
     employee["role"] = data["role"]
     employee["age"] = data["age"]
     employee["salary"] = data["salary"]
-    client = MongoClient()
+    client = MongoClient('mongodb://3.86.159.183:27017/company')
     db = client.company
     e = db.Employees
     e.insert_one(employee)
@@ -73,7 +73,7 @@ def delete_Employee(id):
     if len(employee) == 0:
         abort(404)
 
-    client = MongoClient()
+    client = MongoClient('mongodb://3.86.159.183:27017/company')
     db = client.company
     e = db.Employees
     e.delete_one({"_id" : id})
